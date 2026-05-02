@@ -1,40 +1,49 @@
-const net = require("net");
+
+const net = require("node:net");
+
+const register = require("./register.js");
+const broadcast = require("./broadcast.js");
+const privateMessage = require("./privateMessage.js");
+const disconnect = require("./disconnect.js");
+const listUsers = require("./listUsers.js");
 
 const PORT = 3001;
-
-let clients = [];
+const HOST = "localhost";
 
 const server = net.createServer((socket) => {
-  console.log("someone connected");
-  if (clients.length > 5) {
-    throw new Error("too many clients");
-  }
+    socket.write("Enter username: \n");
 
-  clients.push(socket);
-  socket.on("data", (data) => {
-    const msg = data.toString();
+    socket.on("data", (data) => {
+        const msg = data.toString().trim();
 
-    for (let client of clients) {
-      if (client !== socket) {
-        client.write(msg);
-      }
-    }
-  });
+        if(!socket.name) {
+            const user = register(socket, msg);
+            if(user) {
+                broadcast(socket.name, msg);
+            }
+            return;
+        }
 
-  socket.on("end", () => {
-    console.log("client disconnected");
-    const index = clients.indexOf(socket);
+        if(msg === "/list") {
+            listUsers(socket);
+            return;
+        }
 
-    if (index !== -1) {
-      clients.splice(index, 1);
-    }
-  });
+        if(msg.startsWith("/dm")) {
+            privateMessage(socket, msg);
+            return;
+        }
+
+        broadcast(`${socket.name}: ${msg}`, socket);
+    });
+
+    socket.on("end", () => {
+        disconnect(socket);
+
+        broadcast(`${socket.name} left`, socket);
+    });
 });
 
-server.on("close", () => {
-  console.log("server closed");
-});
-
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("server running");
-});
+server.listen(PORT, HOST, () => {
+    console.log("server running");
+})

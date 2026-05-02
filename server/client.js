@@ -1,21 +1,34 @@
 
-const net = require("net");
+const net = require("node:net");
+const { homedir } = require("node:os");
 
-const client = net.createConnection({port : 3001, host : "localhost"}, () => {
-    console.log("client connected");
-});
+const PORT = 3001;
+const HOST = "localhost";
 
-process.stdin.on("data", (data) => {
-    client.write(data.toString());
+const client = net.createConnection({port: PORT, host: HOST}, () => {
+    console.log("client connected to server");
 })
 
 client.on("data", (data) => {
-    console.log(data.toString());
+    process.stdout.write(data.toString());
 });
 
 client.on("end", () => {
-    console.log("client disconnected");
+    console.log("disconnected from server");
+    process.exit();
 });
 
+client.on("error", (err) => {
+    console.log(`Error: ${err.message}`);
+});
 
+process.stdin.on("data", (data) => {
+    const msg = data.toString().trim();
 
+    if(msg === "/exit") {
+        client.end();
+        process.exit();
+    }
+
+    client.write(msg);
+});
