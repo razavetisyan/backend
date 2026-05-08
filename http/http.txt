@@ -1,0 +1,62 @@
+1.HTTP n protocol e vorov servery ev client y haxordakcvum en, orinak client y xndrum e ej,
+servery uxarkum e HTML
+
+HTTP n ashxatum e TCP i vra, aysinqn HTTP request e anum ev TCP n da hascnum e networkin
+
+2.HTTP request y uni 3 mas`
+
+1.request line - GET/users HTTP/1.1 (baxkacac e method, path, HTTP version ic)
+2.headers - host/content-type/authorization (requesti masin texekutyunner stanalu metodner en)
+3.body - {"name" : "Armen"} (ogtagorcvum e POST, PUT, PATCH i jamanak, aysinqn tvyalner poxelu hamar) 
+
+3.HTTP response uni 3 mas`
+
+1.status-line - HTTP/1.1/200 "OK" (cuyc e talis requesty hajoxutyamb exav te che)
+2.headers - content-type/content-length (texekutyunner fayli masin)
+3.body - {"message" : "success"}
+
+4.HTTP stateless`
+sa nshanakum e vor servery chi hishum naxord request nery, orinak ete login es exel da request1
+isk heto profilt es uzum nayel , servery chi hishum vor du login eir exe. 
+sra hamar ka lucumner` 1.cookies, 2.sessions, 3.JWT
+
+5.HTTP methods`
+
+1.GET - tvayl stanalu hamar GET/users
+2.POST - nor data stexcelu hamar POST/users
+3.PUT - amboxj objecty tarmacnum e PUT/users/1
+4.PATCH - masamb e tarmacnum objecty PATCH/users/1
+5.DELETE - jnjum e resourc y DELETE/users/1
+
+6.Status code categories`
+
+1.1xx - informational (100 - continue, 101 - switching protocols)
+2.2xx - success (200 - OK, 201 - created)
+3.3xx - redirection (301 - moved permanently, 302 - found)
+4.4xx - client error (400 - bad request, 404 - not found)
+5.5xx - server error (500 - internal server error, 503 - service unavailable)
+
+7.Content-type header`
+sa asum e te inch foramtov e tvyaly ekel, asyinq orinan content-type : text/html asum e 
+vor tvyaly html e kam content-type : application/json sa asum e vor tvyaly json e
+
+8.HTTP and NET`
+net moduly ashxatum e uxix TCP kapov isk HTTP module arden built e TCP i vra ev avelacnum e HTTP logic
+net modulov ashxatelu jamanak menq inqners petq e voroshenq te inch e requesty, inch e headery,
+vortex e body n, isk HTTP ov ashxatelu jamanak menq arden unenq patrasti sranq
+
+9.Inchu chpetq e manual parse anel HTTP um`
+vorovhetev node js y arden anum e da`
+1.request line parsing
+2.headers parsing
+3.body streaming
+ev menq stanum enq` req.method, req.url, req.headers y 
+
+10.req.on("data") ev req.on("end")` 
+req.on("data", (chunk) => {
+    console.log(chunk.toString())
+}), aystex gali en poqr maserov tvyalner
+
+req.on("end", () => {
+    console.log("tvyalnery verjacel en")
+}), isk aystex asum e vor tvyalnery verjacel en
