@@ -1,0 +1,118 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* CARD */
+.card {
+  width: 360px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* TITLE */
+.card h2 {
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+/* INPUTS */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 10px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #667eea;
+  color: white;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* MESSAGE */
+.msg {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: red;
+}
+
+.success {
+  color: #2f855a;
+}
+
+/* LINKS */
+a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* DASHBOARD LAYOUT (optional nicer view) */
+.dashboard {
+  width: 500px;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
