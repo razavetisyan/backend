@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "name": "iphone",
+    "description": "iphnoe 17",
+    "price": 250000,
+    "stock_quantity": 3
+  },
+  {
+    "id": 2,
+    "name": "iPhone",
+    "price": 250000,
+    "stock_quantity": 3
+  }
+]
