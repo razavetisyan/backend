@@ -106,7 +106,7 @@ function validateBook(req, res, next) {
 }
 
 function validateHabit(req, res, next) {
-  const { username, frequency, checkIns } = req.body;
+  const { name, frequency, checkIns } = req.body;
 
   if (checkIns) {
     return res.status(400).json({
@@ -115,13 +115,13 @@ function validateHabit(req, res, next) {
   }
 
   if (
-    !username ||
-    typeof username !== "string" ||
-    username.length < 1 ||
-    username.length > 60
+    !name ||
+    typeof name !== "string" ||
+    name.length < 1 ||
+    name.length > 60
   ) {
     return res.status(400).json({
-      message: "username must be string and between 1 to 60 characters long"
+      message: "name must be string and between 1 to 60 characters long"
     });
   }
 
