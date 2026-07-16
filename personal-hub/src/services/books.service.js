@@ -1,5 +1,4 @@
 const BooksModel = require("../models/book.model.js");
-const { generateId } = require("../utils/id.js");
 const { AppError } = require("../utils/AppError.js");
 
 async function getAllBooks() {
@@ -17,16 +16,11 @@ async function getBookById(id) {
 }
 
 async function createBook(data) {
-  const newBook = {
-    id: generateId(),
-    title: data.title,
-    author: data.author,
-    status: data.status || "to-read",
-    rating: data.rating || null,
-    createdAt: new Date().toISOString(),
-  };
+  if(!data.title || !data.author) {
+    throw new AppError("Data is required", 400);  
+  }
 
-  return await BooksModel.createBook(newBook);
+  return await BooksModel.createBook(data);
 }
 
 async function updateBook(id, updateData) {
@@ -52,7 +46,7 @@ async function deleteBook(id) {
     throw new AppError("Book not found", 404);
   }
 
-  await BooksModel.deleteBook(id);
+  return await BooksModel.deleteBook(id);
 }
 
 module.exports = {

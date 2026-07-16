@@ -1,58 +1,52 @@
-const { readJson, writeJson } = require("../utils/fileDb.js");
-const path = require("node:path");
-
-const FILE_PATH = path.join(__dirname, "../../data/books.json");
+const { pool } = require("../utils/db.js");
 
 async function getAllBooks() {
-  const books = await readJson(FILE_PATH);
+  const res = await pool.query("SELECT * FROM books");
 
-  return books;
+  return res.rows;
 }
 
 async function createBook(data) {
-  const books = await getAllBooks();
+  const { title, author } = data;
 
-  books.push(data);
+  const res = await pool.query(
+    "INSERT INTO books (title, author) VALUES ($1, $2) RETURNING *",
+    [title, author],
+  );
 
-  await writeJson(FILE_PATH, books);
-
-  return books;
+  return res.rows[0];
 }
 
 async function updateBook(id, updateData) {
-  const books = await getAllBooks();
+  const { title, author } = updateData;
 
-  const index = books.findIndex((a) => a.id === id);
+  const res = await pool.query(
+    `UPDATE books
+    SET title = COALESCE($1, title), 
+    author = COALESCE($2, author)
+    WHERE id = $3
+    RETURNING *`,
+    [title, author, id],
+  );
 
-  if (index === -1) {
-    return null;
-  }
-
- Object.assign(books[index], updateData);
-
-  await writeJson(FILE_PATH, books);
-
-  return books[index];
+  return res.rows[0] || null;
 }
 
 async function deleteBook(id) {
-  const books = await getAllBooks();
+  const res = await pool.query("DELETE FROM books WHERE id = $1 RETURNING *", [
+    id,
+  ]);
 
-  const filtered = books.filter((a) => a.id !== id);
-
-  if (books.length === filtered.length) {
-    return false;
-  }
-
-  await writeJson(FILE_PATH, filtered);
-
-  return true;
+  return res.rowCount > 0;
 }
 
 async function getBookById(id) {
-  const books = await getAllBooks();
+  const res = await pool.query(
+    "SELECT * FROM books WHERE id = $1",
+    [id],
+  );
 
-  return books.find((a) => a.id === id);
+  return res.rows[0];
 }
 
 module.exports = {

@@ -1,28 +1,29 @@
-const { readJson, writeJson } = require("../utils/fileDb.js");
-const path = require("node:path");
-
-const FILE_PATH = path.join(__dirname, "../../data/users.json");
+const { pool } = require("../utils/db.js");
 
 async function getAllUsers() {
-  const books = await readJson(FILE_PATH);
+  const res = await pool.query('SELECT * FROM users');
 
-  return books;
+  return res.rows;
 }
 
 async function createUser(user) {
-  const users = await readJson(FILE_PATH);
+  const { username, password } = user;
 
-  users.push(user);
+  const res = await pool.query(
+    'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+    [username, password]
+  );
 
-  await writeJson(FILE_PATH, users);
+  return res.rows[0];
 }
 
 async function getUserByName(username) {
-  const users = await getAllUsers();
+  const res = await pool.query(
+    'SELECT * FROM users WHERE username = $1',
+    [username]
+  );
 
-  const user = users.find((a) => a.username === username);
-
-  return user;
+  return res.rows[0];
 }
 
 module.exports = {

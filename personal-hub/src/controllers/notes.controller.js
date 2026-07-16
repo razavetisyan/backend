@@ -23,7 +23,7 @@ async function getNotesByOwnerId(req, res, next) {
   } catch (err) {
     next(err);
   }
-}
+} 
 
 async function getNotesById(req, res, next) {
     try {

@@ -42,9 +42,7 @@ async function createBook(req, res, next) {
 
 async function updateBook(req, res, next) {
   try {
-    const { id } = req.params;
-
-    const book = await BookService.updateBook(id, req.body);
+    const book = await BookService.updateBook(req.params.id, req.body);
 
     res.status(200).json({
       message: "Updated",

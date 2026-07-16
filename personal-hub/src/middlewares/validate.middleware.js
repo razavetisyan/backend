@@ -88,20 +88,6 @@ function validateBook(req, res, next) {
     });
   }
 
-  if (rating !== null) {
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return res.status(400).json({
-        message: "Rating must be integer and between 1 to 5 range",
-      });
-    }
-
-    if (status !== "finished") {
-      return res.status(400).json({
-        message: "Rating allowed only for finished books",
-      });
-    }
-  }
-
   next();
 }
 

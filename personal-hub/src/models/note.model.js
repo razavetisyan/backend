@@ -1,68 +1,58 @@
-const { readJson, writeJson } = require("../utils/fileDb.js");
-const path = require("node:path");
-
-const FILE_PATH = path.join(__dirname, "../../data/notes.json");
+const { pool } = require("../utils/db.js");
 
 async function getAllNotes() {
-  const notes = await readJson(FILE_PATH);
+  const res = await pool.query("SELECT * FROM notes");
 
-  return notes;
+  return res.rows;
 }
 
 async function getNotesByOwnerId(ownerId) {
-  const notes = await getAllNotes();
+  const res = await pool.query("SELECT * FROM notes WHERE owner_id = $1", [
+    ownerId,
+  ]);
 
-  const note = notes.filter((a) => a.ownerId === ownerId);
-
-  return note;
+  return res.rows;
 }
 
 async function getNotesById(id) {
-  const notes = await getAllNotes();
+  const res = await pool.query("SELECT * FROM notes WHERE id = $1", [id]);
 
-  const note = notes.find((a) => a.id === id);
-
-  return note;
+  return res.rows[0] || null;
 }
 
 async function createNote(note) {
-  const notes = await getAllNotes();
+  const { title, body, tags } = note;
 
-  notes.push(note);
+  const res = await pool.query(
+    "INSERT INTO notes (title, body, tags) VALUES ($1, $2, $3) RETURNING *",
+    [title, body, tags],
+  );
 
-  await writeJson(FILE_PATH, notes);
+  return res.rows[0];
 }
 
 async function updateNote(id, updatedNote) {
-  const notes = await getAllNotes();
+  const { title, body, tags } = updatedNote;
 
-  const index = notes.findIndex((a) => a.id === id);
+  const res = await pool.query(
+    `UPDATE notes
+    SET title = COALESCE($1, title), 
+    body = COALESCE($2, body),
+    tags = COALESCE($3, tags)
+    WHERE id = $4
+    RETURNING *`,
+    [title, body, tags, id],
+  );
 
-  if (index === -1) {
-    return null;
-  }
-
-  Object.assign(notes[index], updatedNote);
-
-  notes[index].updatedAt = new Date().toISOString();
-
-  await writeJson(FILE_PATH, notes);
-
-  return notes[index];
+  return res.rows[0] || null;
 }
 
 async function deleteNote(id) {
-  const notes = await getAllNotes();
+  const res = await pool.query("DELETE FROM notes WHERE id = $1 RETURNING *", [
+    id,
+  ]);
 
-  const filtered = notes.filter((a) => a.id !== id);
-
-  if (notes.length === filtered.length) {
-    return false;
-  }
-
-  await writeJson(FILE_PATH, filtered);
-
-  return true;
+  return res.rowCount > 0;
 }
 
 module.exports = {

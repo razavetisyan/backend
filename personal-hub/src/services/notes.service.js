@@ -10,7 +10,6 @@ async function getAllNotes() {
 async function getNotesByOwnerId(username) {
   const user = await UserModel.getUserByName(username);
   const note = await NotesModel.getNotesByOwnerId(user.id);
-
   if (note.length === 0) {
     throw new AppError("Note not found", 404);
   }
